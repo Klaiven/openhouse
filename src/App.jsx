@@ -9,7 +9,8 @@ import {
   serverTimestamp,
   addDoc,
   deleteDoc,
-  updateDoc
+  updateDoc,
+  deleteField
 } from "firebase/firestore";
 import { 
   getAuth, 
@@ -20,7 +21,7 @@ import {
 import QRCode from "qrcode";
 import { 
   Heart, Home, ShoppingBag, Phone, User, X, CheckCircle,
-  Copy, ExternalLink, Gift, Plus, Trash2, Edit2, LogIn, LogOut, Camera, Save, Settings, Loader2
+  Copy, ExternalLink, Gift, Plus, Trash2, Edit2, LogIn, LogOut, Camera, Save, Settings, Loader2, Unlock
 } from "lucide-react";
 
 // 🔥 CONFIG FIREBASE
@@ -41,6 +42,7 @@ const auth = getAuth(app);
 const IMGBB_API_KEY = "79ef9ddfd36c6bfd3bcfd962c853b7a1"; 
 
 const CHAVE_PIX_DESTINO = "11980973458"; 
+const WHATSAPP_CONTATO = "8182708389"; // Adicione aqui o segundo contato (ex: seu parceiro(a))
 
 function crc16(data) {
   let crc = 0xFFFF;
@@ -83,6 +85,7 @@ export default function App() {
   const [qr, setQr] = useState("");
   const [loading, setLoading] = useState(false);
   const [pixCopiaECola, setPixCopiaECola] = useState("");
+  const [whatsappMsg, setWhatsappMsg] = useState("");
 
   // States para CRUD
   const [editando, setEditando] = useState(null);
@@ -176,6 +179,19 @@ export default function App() {
     }
   };
 
+  const removerReserva = async (id) => {
+    if (confirm("Deseja liberar este presente para outra pessoa reservar?")) {
+      try {
+        await updateDoc(doc(db, "produtos", id), {
+          reservado: false,
+          reservadoPor: deleteField(),
+          telefone: deleteField(),
+          dataReserva: deleteField()
+        });
+      } catch (e) { alert("Erro ao remover reserva: " + e.message); }
+    }
+  };
+
   const reservar = async () => {
     if (!nome || !telefone) return alert("Por favor, preencha seu nome e telefone.");
     setLoading(true);
@@ -194,6 +210,19 @@ export default function App() {
       const payload = generatePixPayload(CHAVE_PIX_DESTINO, parseFloat(selecionado.valor));
       setPixCopiaECola(payload);
       setQr(await QRCode.toDataURL(payload, { width: 300, margin: 2, color: { dark: "#be185d", light: "#ffffff" } }));
+      
+      const msg = 
+        `*RESERVA DE PRESENTE - NOSSO NOVO LAR*\n\n` +
+        `Olá! Acabei de reservar um presente:\n\n` +
+        `*Item:* ${selecionado.nome}\n` +
+        `*Valor:* R$ ${selecionado.valor.toFixed(2)}\n` +
+        `*Link:* ${selecionado.linkCompra || 'N/A'}\n\n` +
+        `*CHAVE PIX (Copia e Cola):*\n${payload}\n\n` +
+        `*Reservado por:* ${nome}`;
+
+        
+      
+      setWhatsappMsg(encodeURIComponent(msg));
     } catch (e) { alert(e); }
     setLoading(false);
   };
@@ -250,16 +279,28 @@ export default function App() {
       <header className="bg-white border-b border-pink-100 py-16 px-6 text-center shadow-sm relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-200 via-pink-400 to-pink-200 opacity-50"></div>
         <div className="max-w-3xl mx-auto relative animate-in fade-in zoom-in duration-1000">
-          <div 
-            className="inline-block p-4 bg-pink-100 rounded-full mb-6 cursor-pointer hover:rotate-12 transition-transform shadow-inner"
-            onClick={() => window.location.reload()}
-          >
-            <Home className="text-pink-600 w-10 h-10" />
+          
+          {/* Foto do Casal Personalizada */}
+          <div className="relative inline-block mb-8">
+            <div className="absolute -inset-2 bg-gradient-to-tr from-pink-400 to-pink-200 rounded-[3rem] rotate-3 opacity-30 blur-sm"></div>
+            <div className="relative w-48 h-60 md:w-56 md:h-72 overflow-hidden rounded-[2.5rem] shadow-2xl border-4 border-white transform hover:rotate-0 transition-transform duration-500 -rotate-3">
+              <img 
+                src="https://i.ibb.co/qtb6ZgX/IMG-20240324-152207.jpg" 
+                alt="Ialy e Klaiven"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.target.src = "https://i.ibb.co/680L6Xg/IMG-20240324-152207.jpg"; // Alternativa caso falhe
+                }}
+              />
+            </div>
           </div>
-          <h1 className="text-5xl md:text-6xl font-serif font-bold text-pink-800 mb-6 tracking-tight">Nosso Novo Lar</h1>
-          <p className="text-xl text-pink-600 font-medium italic max-w-lg mx-auto leading-relaxed">
-            "A alegria de montar nosso cantinho é maior quando compartilhada com quem amamos."
+
+          <h1 className="text-5xl md:text-6xl font-serif font-bold text-pink-800 mb-4 tracking-tight">Ialy & Klaiven</h1>
+          <p className="text-2xl font-medium text-pink-600 mb-6 italic">Nosso Chá de Casa Nova</p>
+          <p className="text-lg text-slate-500 font-medium max-w-lg mx-auto leading-relaxed">
+            "Estamos começando um novo capítulo da nossa história indo morar juntos! Criamos essa lista para quem quiser nos ajudar a montar o nosso cantinho."
           </p>
+          
           <div className="flex items-center justify-center gap-4 mt-10">
             <div className="h-[1px] w-12 bg-pink-200"></div>
             <Heart className="text-pink-300 fill-pink-300 w-5 h-5 animate-pulse" />
@@ -284,6 +325,15 @@ export default function App() {
               >
                 {user && (
                   <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 translate-y-2 group-hover:translate-y-0">
+                    {p.reservado && (
+                      <button 
+                        onClick={() => removerReserva(p.id)} 
+                        className="bg-white/90 p-3 rounded-full text-orange-500 shadow-lg hover:bg-orange-50 hover:scale-110 active:scale-95"
+                        title="Liberar Reserva"
+                      >
+                        <Unlock className="w-4 h-4" />
+                      </button>
+                    )}
                     <button 
                       onClick={() => { setEditando(p); setNovoProd(p); setIsAdminMode(true); }} 
                       className="bg-white/90 p-3 rounded-full text-blue-500 shadow-lg hover:bg-blue-50 hover:scale-110 active:scale-95"
@@ -537,7 +587,14 @@ export default function App() {
                   </a>
                 )}
                 <button 
-                  onClick={() => { setQr(""); setSelecionado(null); setNome(""); setTelefone(""); }} 
+                  onClick={() => { 
+                    window.open(`https://wa.me/55${WHATSAPP_CONTATO}?text=${whatsappMsg}`, "_blank");
+                    setQr(""); 
+                    setSelecionado(null); 
+                    setNome(""); 
+                    setTelefone(""); 
+                    setWhatsappMsg("");
+                  }} 
                   className="w-full text-slate-400 font-black uppercase tracking-widest text-xs py-4 hover:text-slate-600 transition-colors"
                 >
                   Concluído
