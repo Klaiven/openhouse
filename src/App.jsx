@@ -42,7 +42,11 @@ const auth = getAuth(app);
 const IMGBB_API_KEY = "79ef9ddfd36c6bfd3bcfd962c853b7a1"; 
 
 const CHAVE_PIX_DESTINO = "11980973458"; 
-const WHATSAPP_CONTATO = "8182708389"; // Adicione aqui o segundo contato (ex: seu parceiro(a))
+const WHATSAPP_CONTATO = "8173145848"; 
+
+// CONFIGURAÇÃO TELEGRAM (Opcional - Grátis e Automático)
+const TELEGRAM_BOT_TOKEN = "8637356704:AAFIyLZ-bBTOf-dyQwA0tdsn5m4Kdms7CLY"; // Insira o token do seu bot aqui
+const TELEGRAM_CHAT_ID = "-1003883720754";    // IDs de grupos/canais no Telegram sempre começam com - ou -100
 
 function crc16(data) {
   let crc = 0xFFFF;
@@ -237,6 +241,25 @@ export default function App() {
         
       
       setWhatsappMsg(encodeURIComponent(msg));
+
+      // Notificação Automática via Telegram (Ocorre em background)
+      if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
+        const text = encodeURIComponent(
+          `🔔 *NOVA RESERVA!*\n\n` +
+          `👤 *De:* ${nome}\n` +
+          `📱 *WhatsApp:* ${telefone}\n` +
+          `🎁 *Presente:* ${selecionado.nome}\n` +
+          `💰 *Valor:* R$ ${selecionado.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+        );
+        
+        fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${text}&parse_mode=Markdown`)
+          .then(res => res.json())
+          .then(data => {
+            if (!data.ok) console.error("Erro no Telegram:", data.description);
+          })
+          .catch(err => console.error("Erro ao conectar ao Telegram:", err));
+      }
+
     } catch (e) { alert(e); }
     setLoading(false);
   };
