@@ -26,27 +26,27 @@ import {
 
 // 🔥 CONFIG FIREBASE
 const firebaseConfig = {
-  apiKey: "AIzaSyB8upfLS0g-_wwdr4U6_ORVwv34szWhzQ8",
-  authDomain: "openhouse-670bc.firebaseapp.com",
-  projectId: "openhouse-670bc",
-  storageBucket: "openhouse-670bc.firebasestorage.app",
-  messagingSenderId: "213476855503",
-  appId: "1:213476855503:web:3c1f7a436b032ea72ab1ba",
-  measurementId: "G-ZQEVFPXRFE"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-const IMGBB_API_KEY = "79ef9ddfd36c6bfd3bcfd962c853b7a1"; 
+const IMGBB_API_KEY = import.meta.env.VITE_IMGBB_API_KEY; 
 
-const CHAVE_PIX_DESTINO = "11980973458"; 
-const WHATSAPP_CONTATO = "8173145848"; 
+const CHAVE_PIX_DESTINO = import.meta.env.VITE_CHAVE_PIX_DESTINO; 
+const WHATSAPP_CONTATO = import.meta.env.VITE_WHATSAPP_CONTATO; 
 
 // CONFIGURAÇÃO TELEGRAM (Opcional - Grátis e Automático)
-const TELEGRAM_BOT_TOKEN = "8637356704:AAFIyLZ-bBTOf-dyQwA0tdsn5m4Kdms7CLY"; // Insira o token do seu bot aqui
-const TELEGRAM_CHAT_ID = "-1003883720754";    // IDs de grupos/canais no Telegram sempre começam com - ou -100
+const TELEGRAM_BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+const TELEGRAM_CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID;
 
 function crc16(data) {
   let crc = 0xFFFF;
