@@ -87,6 +87,20 @@ export default function App() {
   const [pixCopiaECola, setPixCopiaECola] = useState("");
   const [whatsappMsg, setWhatsappMsg] = useState("");
 
+  const formatarTelefone = (valor) => {
+    let v = valor.replace(/\D/g, ""); // Remove tudo que não é dígito
+    if (v.length > 11) v = v.slice(0, 11);
+    
+    if (v.length > 7) {
+      v = `${v.slice(0, 2)} ${v.slice(2, 3)} ${v.slice(3, 7)}-${v.slice(7)}`;
+    } else if (v.length > 3) {
+      v = `${v.slice(0, 2)} ${v.slice(2, 3)} ${v.slice(3)}`;
+    } else if (v.length > 2) {
+      v = `${v.slice(0, 2)} ${v.slice(2)}`;
+    }
+    return v;
+  };
+
   // States para CRUD
   const [editando, setEditando] = useState(null);
   const [novoProd, setNovoProd] = useState({ nome: "", valor: "", linkCompra: "", linkImagem: "" });
@@ -215,7 +229,7 @@ export default function App() {
         `*RESERVA DE PRESENTE - NOSSO NOVO LAR*\n\n` +
         `Olá! Acabei de reservar um presente:\n\n` +
         `*Item:* ${selecionado.nome}\n` +
-        `*Valor:* R$ ${selecionado.valor.toFixed(2)}\n` +
+        `*Valor:* R$ ${selecionado.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}\n` +
         `*Link:* ${selecionado.linkCompra || 'N/A'}\n\n` +
         `*CHAVE PIX (Copia e Cola):*\n${payload}\n\n` +
         `*Reservado por:* ${nome}`;
@@ -245,21 +259,21 @@ export default function App() {
             <button 
               onClick={() => setShowUserAdmin(true)} 
               title="Gerenciar Usuários"
-              className="bg-slate-800 text-white p-4 rounded-full shadow-2xl hover:bg-slate-900 transition-all hover:scale-110 active:scale-95 group"
+              className="bg-slate-800 text-white p-4 rounded-full shadow-2xl hover:bg-slate-900 transition-all hover:scale-110 active:scale-95 group cursor-pointer"
             >
               <Settings className="w-6 h-6 group-hover:rotate-90 transition-transform duration-500" />
             </button>
             <button 
               onClick={() => { setIsAdminMode(true); setEditando(null); setNovoProd({ nome: "", valor: "", linkCompra: "", linkImagem: "" }); }} 
               title="Novo Presente"
-              className="bg-pink-600 text-white p-4 rounded-full shadow-2xl hover:bg-pink-700 transition-all hover:scale-110 active:scale-95"
+              className="bg-pink-600 text-white p-4 rounded-full shadow-2xl hover:bg-pink-700 transition-all hover:scale-110 active:scale-95 cursor-pointer"
             >
               <Plus className="w-6 h-6" />
             </button>
             <button 
               onClick={() => signOut(auth)} 
               title="Sair"
-              className="bg-white text-pink-600 p-4 rounded-full shadow-2xl border border-pink-100 hover:bg-pink-50 transition-all hover:scale-110 active:scale-95"
+              className="bg-white text-pink-600 p-4 rounded-full shadow-2xl border border-pink-100 hover:bg-pink-50 transition-all hover:scale-110 active:scale-95 cursor-pointer"
             >
               <LogOut className="w-6 h-6" />
             </button>
@@ -267,7 +281,7 @@ export default function App() {
         ) : (
           <button 
             onClick={() => setShowLogin(true)} 
-            className="bg-pink-600 text-white p-4 rounded-full shadow-2xl hover:bg-pink-700 transition-all hover:scale-110 active:scale-95 flex items-center gap-2 group"
+            className="bg-pink-600 text-white p-4 rounded-full shadow-2xl hover:bg-pink-700 transition-all hover:scale-110 active:scale-95 flex items-center gap-2 group cursor-pointer"
           >
             <LogIn className="w-6 h-6" />
             <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 font-bold whitespace-nowrap">Admin</span>
@@ -276,16 +290,16 @@ export default function App() {
       </div>
 
       {/* Header Estilo Delicado */}
-      <header className="bg-white border-b border-pink-100 py-16 px-6 text-center shadow-sm relative overflow-hidden">
+      <header className="bg-white border-b border-pink-100 py-8 md:py-12 px-6 text-center shadow-sm relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-200 via-pink-400 to-pink-200 opacity-50"></div>
         <div className="max-w-3xl mx-auto relative animate-in fade-in zoom-in duration-1000">
           
           {/* Foto do Casal Personalizada */}
-          <div className="relative inline-block mb-8">
-            <div className="absolute -inset-2 bg-gradient-to-tr from-pink-400 to-pink-200 rounded-[3rem] rotate-3 opacity-30 blur-sm"></div>
-            <div className="relative w-48 h-60 md:w-56 md:h-72 overflow-hidden rounded-[2.5rem] shadow-2xl border-4 border-white transform hover:rotate-0 transition-transform duration-500 -rotate-3">
+          <div className="relative inline-block mb-6">
+            <div className="absolute -inset-1.5 bg-gradient-to-tr from-pink-400 to-pink-200 rounded-[2rem] rotate-3 opacity-30 blur-sm"></div>
+            <div className="relative w-32 h-40 md:w-44 md:h-56 overflow-hidden rounded-[1.8rem] shadow-xl border-4 border-white transform hover:rotate-0 transition-transform duration-500 -rotate-3">
               <img 
-                src="https://i.ibb.co/qtb6ZgX/IMG-20240324-152207.jpg" 
+                src="https://i.ibb.co/3DtKJFG/DSC03661.jpg" 
                 alt="Ialy e Klaiven"
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -295,87 +309,98 @@ export default function App() {
             </div>
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-serif font-bold text-pink-800 mb-4 tracking-tight">Ialy & Klaiven</h1>
-          <p className="text-2xl font-medium text-pink-600 mb-6 italic">Nosso Chá de Casa Nova</p>
-          <p className="text-lg text-slate-500 font-medium max-w-lg mx-auto leading-relaxed">
-            "Estamos começando um novo capítulo da nossa história indo morar juntos! Criamos essa lista para quem quiser nos ajudar a montar o nosso cantinho."
+          <h1 className="text-3xl md:text-5xl font-serif font-bold text-pink-800 mb-2 tracking-tight text-nowrap">Ialy & Klaiven</h1>
+          <p className="text-lg md:text-xl font-medium text-pink-600 mb-4 italic">Nosso Chá de Casa Nova</p>
+          <p className="text-sm md:text-base text-slate-500 font-medium max-w-lg mx-auto leading-relaxed">
+            "Estamos começando um novo capítulo da nossa história indo morar juntos! Criamos essa lista para você fazer parte desse momento especial da nossa vida."
           </p>
           
-          <div className="flex items-center justify-center gap-4 mt-10">
-            <div className="h-[1px] w-12 bg-pink-200"></div>
-            <Heart className="text-pink-300 fill-pink-300 w-5 h-5 animate-pulse" />
-            <div className="h-[1px] w-12 bg-pink-200"></div>
+          <div className="flex items-center justify-center gap-3 mt-6">
+            <div className="h-[1px] w-10 bg-pink-200"></div>
+            <Heart className="text-pink-300 fill-pink-300 w-4 h-4 animate-pulse" />
+            <div className="h-[1px] w-10 bg-pink-200"></div>
           </div>
         </div>
       </header>
 
       {/* Grid de Produtos */}
-      <main className="max-w-6xl mx-auto px-6 mt-16 animate-in fade-in slide-in-from-bottom duration-1000">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10">
+      <main className="max-w-6xl mx-auto px-4 md:px-6 mt-8 md:mt-12 animate-in fade-in slide-in-from-bottom duration-1000">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
           {produtos.length === 0 ? (
-            <div className="col-span-full py-32 text-center">
-              <Loader2 className="w-10 h-10 text-pink-300 animate-spin mx-auto mb-4" />
-              <p className="text-pink-300 font-medium italic">Preparando a lista com carinho...</p>
+            <div className="col-span-full py-20 text-center">
+              <Loader2 className="w-8 h-8 text-pink-300 animate-spin mx-auto mb-4" />
+              <p className="text-pink-300 text-sm font-medium italic">Preparando a lista com carinho...</p>
             </div>
           ) : (
             produtos.map((p) => (
               <div 
                 key={p.id} 
-                className="bg-white rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-pink-50 flex flex-col relative group hover:-translate-y-2"
+                className="bg-white rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-pink-50 flex flex-col relative group hover:-translate-y-1"
               >
                 {user && (
-                  <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 translate-y-2 group-hover:translate-y-0">
+                  <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 translate-y-1 group-hover:translate-y-0">
                     {p.reservado && (
                       <button 
                         onClick={() => removerReserva(p.id)} 
-                        className="bg-white/90 p-3 rounded-full text-orange-500 shadow-lg hover:bg-orange-50 hover:scale-110 active:scale-95"
+                        className="bg-white/90 p-2 rounded-full text-orange-500 shadow-md hover:bg-orange-50 hover:scale-110 active:scale-95 cursor-pointer"
                         title="Liberar Reserva"
                       >
-                        <Unlock className="w-4 h-4" />
+                        <Unlock className="w-3.5 h-3.5" />
                       </button>
+                    )}
+                    {p.linkCompra && (
+                      <a 
+                        href={p.linkCompra}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-white/90 p-2 rounded-full text-emerald-500 shadow-md hover:bg-emerald-50 hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer"
+                        title="Ver na Loja"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
                     )}
                     <button 
                       onClick={() => { setEditando(p); setNovoProd(p); setIsAdminMode(true); }} 
-                      className="bg-white/90 p-3 rounded-full text-blue-500 shadow-lg hover:bg-blue-50 hover:scale-110 active:scale-95"
+                      className="bg-white/90 p-2 rounded-full text-blue-500 shadow-md hover:bg-blue-50 hover:scale-110 active:scale-95 cursor-pointer"
                     >
-                      <Edit2 className="w-4 h-4" />
+                      <Edit2 className="w-3.5 h-3.5" />
                     </button>
                     <button 
                       onClick={() => deletarProduto(p.id)} 
-                      className="bg-white/90 p-3 rounded-full text-red-500 shadow-lg hover:bg-red-50 hover:scale-110 active:scale-95"
+                      className="bg-white/90 p-2 rounded-full text-red-500 shadow-md hover:bg-red-50 hover:scale-110 active:scale-95 cursor-pointer"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 )}
-                <div className="relative h-64 overflow-hidden">
+                <div className="relative h-40 md:h-64 overflow-hidden">
                   <img 
                     src={p.linkImagem || "https://via.placeholder.com/400x400?text=Presente"} 
                     className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700" 
                   />
                   {p.reservado && (
-                    <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] flex items-center justify-center">
-                      <div className="bg-white/90 px-6 py-2 rounded-full shadow-lg border border-pink-100">
-                        <span className="text-xs font-black text-pink-600 uppercase tracking-widest">Reservado</span>
+                    <div className="absolute inset-0 bg-white/40 backdrop-blur-[1px] flex items-center justify-center">
+                      <div className="bg-white/90 px-3 md:px-6 py-1 md:py-2 rounded-full shadow-md border border-pink-100">
+                        <span className="text-[10px] md:text-xs font-black text-pink-600 uppercase tracking-widest">Reservado</span>
                       </div>
                     </div>
                   )}
                 </div>
-                <div className="p-8 flex-grow flex flex-col text-center">
-                  <h2 className="text-xl font-bold text-slate-800 mb-2 leading-tight">{p.nome}</h2>
-                  <p className="text-pink-600 font-black text-2xl mb-6 tracking-tight">R$ {p.valor.toFixed(2)}</p>
+                <div className="p-4 md:p-8 flex-grow flex flex-col text-center">
+                  <h2 className="text-sm md:text-xl font-bold text-slate-800 mb-1 md:mb-2 leading-tight line-clamp-2">{p.nome}</h2>
+                  <p className="text-pink-600 font-black text-base md:text-2xl mb-3 md:mb-6 tracking-tight">R$ {p.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                   <div className="mt-auto">
                     {p.reservado ? (
-                      <div className="bg-pink-50 p-4 rounded-2xl border border-pink-100 text-sm">
-                        <p className="text-pink-300 uppercase font-bold text-[10px] mb-1 tracking-widest">Escolhido por</p>
-                        <p className="text-pink-700 font-bold">{p.reservadoPor}</p>
+                      <div className="bg-pink-50 p-2 md:p-4 rounded-xl md:rounded-2xl border border-pink-100 text-[10px] md:text-sm">
+                        <p className="text-pink-300 uppercase font-bold text-[8px] md:text-[10px] mb-0.5 md:mb-1 tracking-widest">Escolhido por</p>
+                        <p className="text-pink-700 font-bold truncate">{p.reservadoPor}</p>
                       </div>
                     ) : (
                       <button 
                         onClick={() => setSelecionado(p)} 
-                        className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-pink-200 transition-all flex items-center justify-center gap-2 active:scale-95"
+                        className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2.5 md:py-4 rounded-xl md:rounded-2xl shadow-md hover:shadow-pink-200 transition-all flex items-center justify-center gap-1.5 md:gap-2 active:scale-95 text-xs md:text-base cursor-pointer"
                       >
-                        <Gift className="w-5 h-5" /> Presentear
+                        <Gift className="w-4 h-4 md:w-5 h-5" /> Presentear
                       </button>
                     )}
                   </div>
@@ -389,34 +414,34 @@ export default function App() {
       {/* MODAL LOGIN COM ANIMAÇÃO */}
       {showLogin && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
-          <div className={`bg-white rounded-[3rem] p-10 w-full max-w-sm shadow-2xl transition-all duration-500 transform ${isLoggingIn ? 'scale-95 opacity-50' : 'scale-100'}`}>
-            <div className="bg-pink-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
-              <LogIn className="w-10 h-10 text-pink-500" />
+          <div className={`bg-white rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 w-full max-w-sm shadow-2xl transition-all duration-500 transform ${isLoggingIn ? 'scale-95 opacity-50' : 'scale-100'}`}>
+            <div className="bg-pink-50 w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto mb-6 md:mb-8 shadow-inner">
+              <LogIn className="w-8 h-8 md:w-10 md:h-10 text-pink-500" />
             </div>
-            <h2 className="text-3xl font-bold text-slate-800 text-center mb-8">Olá, Admin!</h2>
-            <div className="space-y-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-800 text-center mb-6 md:mb-8">Olá, Admin!</h2>
+            <div className="space-y-3 md:space-y-4">
               <input 
                 type="email" 
                 placeholder="E-mail" 
                 value={emailLogin} 
                 onChange={e => setEmailLogin(e.target.value)} 
-                className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all text-center" 
+                className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all text-center text-sm md:text-base" 
               />
               <input 
                 type="password" 
                 placeholder="Senha" 
                 value={passLogin} 
                 onChange={e => setPassLogin(e.target.value)} 
-                className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all text-center" 
+                className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all text-center text-sm md:text-base" 
               />
               <button 
                 onClick={handleLogin} 
                 disabled={isLoggingIn}
-                className="w-full bg-pink-600 text-white font-bold py-5 rounded-2xl hover:bg-pink-700 transition-all flex items-center justify-center gap-3 shadow-xl active:scale-95 disabled:opacity-50"
+                className="w-full bg-pink-600 text-white font-bold py-4 md:py-5 rounded-xl md:rounded-2xl hover:bg-pink-700 transition-all flex items-center justify-center gap-2 md:gap-3 shadow-xl active:scale-95 disabled:opacity-50 text-sm md:text-base"
               >
-                {isLoggingIn ? <Loader2 className="w-6 h-6 animate-spin" /> : "Acessar Painel"}
+                {isLoggingIn ? <Loader2 className="w-5 h-5 md:w-6 h-6 animate-spin" /> : "Acessar Painel"}
               </button>
-              <button onClick={() => setShowLogin(false)} className="w-full text-slate-400 font-bold py-2 text-sm hover:text-slate-600 transition-colors">Voltar para o site</button>
+              <button onClick={() => setShowLogin(false)} className="w-full text-slate-400 font-bold py-2 text-xs md:text-sm hover:text-slate-600 transition-colors">Voltar para o site</button>
             </div>
           </div>
         </div>
@@ -425,16 +450,16 @@ export default function App() {
       {/* MODAL CRUD PRODUTO (ImgBB API) */}
       {isAdminMode && (
         <div className="fixed inset-0 bg-pink-900/20 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
-          <div className="bg-white rounded-[3rem] w-full max-w-lg shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-500">
-            <div className="bg-pink-50 p-8 flex justify-between items-center border-b border-pink-100">
-              <h2 className="text-2xl font-bold text-pink-800">{editando ? "Editar Presente" : "Novo Presente"}</h2>
+          <div className="bg-white rounded-[2rem] md:rounded-[3rem] w-full max-w-lg shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-500">
+            <div className="bg-pink-50 p-6 md:p-8 flex justify-between items-center border-b border-pink-100">
+              <h2 className="text-xl md:text-2xl font-bold text-pink-800">{editando ? "Editar Presente" : "Novo Presente"}</h2>
               <button onClick={() => setIsAdminMode(false)} className="p-2 hover:bg-pink-200 rounded-full transition-colors">
-                <X className="text-pink-400 w-6 h-6" />
+                <X className="text-pink-400 w-5 h-5 md:w-6 h-6" />
               </button>
             </div>
-            <div className="p-10 space-y-6">
+            <div className="p-6 md:p-10 space-y-4 md:space-y-6">
               <div className="flex justify-center">
-                <label className="cursor-pointer group relative w-full h-48 bg-pink-50 border-4 border-dashed border-pink-100 rounded-[2.5rem] flex flex-col items-center justify-center hover:bg-pink-100 transition-all overflow-hidden shadow-inner">
+                <label className="cursor-pointer group relative w-full h-32 md:h-48 bg-pink-50 border-4 border-dashed border-pink-100 rounded-[1.5rem] md:rounded-[2.5rem] flex flex-col items-center justify-center hover:bg-pink-100 transition-all overflow-hidden shadow-inner">
                   {imgFile || novoProd.linkImagem ? (
                     <img 
                       src={imgFile ? URL.createObjectURL(imgFile) : novoProd.linkImagem} 
@@ -442,41 +467,41 @@ export default function App() {
                     />
                   ) : null}
                   <div className="z-10 flex flex-col items-center">
-                    <Camera className="w-10 h-10 text-pink-300 mb-2" />
-                    <span className="text-sm text-pink-400 font-black uppercase tracking-widest">Enviar Foto</span>
+                    <Camera className="w-8 h-8 md:w-10 md:h-10 text-pink-300 mb-1 md:mb-2" />
+                    <span className="text-[10px] md:text-sm text-pink-400 font-black uppercase tracking-widest text-center">Enviar Foto</span>
                   </div>
                   <input type="file" className="hidden" accept="image/*" onChange={e => setImgFile(e.target.files[0])} />
                 </label>
               </div>
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 <input 
                   placeholder="Nome do Produto" 
                   value={novoProd.nome} 
                   onChange={e => setNovoProd({...novoProd, nome: e.target.value})} 
-                  className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all" 
+                  className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all text-sm md:text-base" 
                 />
-                <div className="flex gap-4">
+                <div className="flex gap-3 md:gap-4">
                   <input 
                     type="number" 
                     placeholder="Valor R$" 
                     value={novoProd.valor} 
                     onChange={e => setNovoProd({...novoProd, valor: e.target.value})} 
-                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all" 
+                    className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all text-sm md:text-base" 
                   />
                   <input 
                     placeholder="Link da Loja" 
                     value={novoProd.linkCompra} 
                     onChange={e => setNovoProd({...novoProd, linkCompra: e.target.value})} 
-                    className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all" 
+                    className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all text-sm md:text-base" 
                   />
                 </div>
               </div>
               <button 
                 disabled={loading} 
                 onClick={salvarProduto} 
-                className="w-full bg-pink-600 text-white font-bold py-5 rounded-[1.5rem] shadow-xl hover:bg-pink-700 transition-all flex items-center justify-center gap-3 active:scale-95 disabled:opacity-50"
+                className="w-full bg-pink-600 text-white font-bold py-4 md:py-5 rounded-xl md:rounded-[1.5rem] shadow-xl hover:bg-pink-700 transition-all flex items-center justify-center gap-2 md:gap-3 active:scale-95 disabled:opacity-50 text-sm md:text-base"
               >
-                {loading ? <Loader2 className="w-6 h-6 animate-spin" /> : <><Save className="w-5 h-5" /> Salvar na Lista</>}
+                {loading ? <Loader2 className="w-5 h-5 md:w-6 h-6 animate-spin" /> : <><Save className="w-4 h-4 md:w-5 h-5" /> Salvar na Lista</>}
               </button>
             </div>
           </div>
@@ -486,32 +511,32 @@ export default function App() {
       {/* MODAL GESTÃO USUÁRIOS */}
       {showUserAdmin && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in zoom-in duration-300">
-          <div className="bg-white rounded-[3rem] p-10 w-full max-w-md shadow-2xl">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-bold text-slate-800">Administradores</h2>
+          <div className="bg-white rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 w-full max-w-md shadow-2xl">
+            <div className="flex justify-between items-center mb-6 md:mb-8">
+              <h2 className="text-xl md:text-2xl font-bold text-slate-800">Administradores</h2>
               <button 
                 onClick={criarUsuarioAction} 
-                className="bg-pink-100 text-pink-600 px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest hover:bg-pink-200 transition-colors"
+                className="bg-pink-100 text-pink-600 px-4 md:px-6 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-pink-200 transition-colors"
               >
                 + Novo
               </button>
             </div>
-            <div className="space-y-3 max-h-72 overflow-y-auto pr-2 mb-8 custom-scrollbar">
+            <div className="space-y-2 md:space-y-3 max-h-60 md:max-h-72 overflow-y-auto pr-2 mb-6 md:mb-8 custom-scrollbar">
               {usuarios.map(u => (
-                <div key={u.id} className="flex justify-between items-center p-5 bg-slate-50 rounded-[1.5rem] border border-slate-100 group">
-                  <span className="text-sm font-bold text-slate-600">{u.email}</span>
+                <div key={u.id} className="flex justify-between items-center p-4 md:p-5 bg-slate-50 rounded-xl md:rounded-[1.5rem] border border-slate-100 group">
+                  <span className="text-xs md:text-sm font-bold text-slate-600 truncate mr-2">{u.email}</span>
                   <button 
                     onClick={() => { if(confirm("Remover acesso?")) deleteDoc(doc(db, "usuarios", u.id)) }} 
-                    className="text-red-300 hover:text-red-500 p-2 hover:bg-red-50 rounded-full transition-all"
+                    className="text-red-300 hover:text-red-500 p-1.5 md:p-2 hover:bg-red-50 rounded-full transition-all flex-shrink-0"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5 md:w-4 h-4" />
                   </button>
                 </div>
               ))}
             </div>
             <button 
               onClick={() => setShowUserAdmin(false)} 
-              className="w-full py-4 text-slate-400 font-bold hover:text-slate-600 transition-colors text-sm"
+              className="w-full py-2 text-slate-400 font-bold hover:text-slate-600 transition-colors text-xs md:text-sm"
             >
               Fechar Configurações
             </button>
@@ -522,34 +547,40 @@ export default function App() {
       {/* MODAL RESERVA */}
       {selecionado && !qr && (
         <div className="fixed inset-0 bg-pink-900/40 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in zoom-in duration-300">
-          <div className="bg-white rounded-[3rem] shadow-2xl w-full max-w-md overflow-hidden p-10 text-center animate-in slide-in-from-bottom duration-500">
-            <div className="bg-pink-50 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Gift className="w-10 h-10 text-pink-500" />
+          <div className="bg-white rounded-[2rem] md:rounded-[3rem] shadow-2xl w-full max-w-md overflow-hidden p-6 md:p-10 text-center animate-in slide-in-from-bottom duration-500 relative">
+            <button 
+              onClick={() => setSelecionado(null)}
+              className="absolute top-4 right-4 p-2 hover:bg-pink-50 rounded-full transition-colors cursor-pointer text-pink-300 hover:text-pink-600"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="bg-pink-50 w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+              <Gift className="w-8 h-8 md:w-10 md:h-10 text-pink-500" />
             </div>
-            <h2 className="text-3xl font-bold text-pink-800 mb-2">Quase lá!</h2>
-            <p className="text-pink-400 mb-8 italic">Você escolheu presentear com: <br/><span className="font-bold text-pink-600">"{selecionado.nome}"</span></p>
+            <h2 className="text-2xl md:text-3xl font-bold text-pink-800 mb-1 md:mb-2">Quase lá!</h2>
+            <p className="text-sm md:text-base text-pink-400 mb-6 md:mb-8 italic">Você escolheu presentear com: <br/><span className="font-bold text-pink-600">"{selecionado.nome}"</span></p>
             
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               <input 
                 placeholder="Seu nome completo" 
-                className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 text-center" 
+                className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 text-center text-sm md:text-base" 
                 value={nome} 
                 onChange={e => setNome(e.target.value)} 
               />
               <input 
-                placeholder="Seu WhatsApp" 
-                className="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 text-center" 
+                placeholder="Seu WhatsApp (81 9 0000-0000)" 
+                className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 text-center text-sm md:text-base" 
                 value={telefone} 
-                onChange={e => setTelefone(e.target.value)} 
+                onChange={e => setTelefone(formatarTelefone(e.target.value))} 
               />
               <button 
                 disabled={loading} 
-                className="w-full bg-pink-600 text-white font-bold py-5 rounded-2xl shadow-xl hover:bg-pink-700 transition-all active:scale-95 disabled:opacity-50" 
+                className="w-full bg-pink-600 text-white font-bold py-4 md:py-5 rounded-xl md:rounded-2xl shadow-xl hover:bg-pink-700 transition-all active:scale-95 disabled:opacity-50 text-sm md:text-base cursor-pointer" 
                 onClick={reservar}
               >
-                {loading ? <Loader2 className="w-6 h-6 animate-spin mx-auto" /> : "Confirmar Presente"}
+                {loading ? <Loader2 className="w-5 h-5 md:w-6 h-6 animate-spin mx-auto" /> : "Confirmar Presente"}
               </button>
-              <button onClick={() => setSelecionado(null)} className="w-full py-2 text-slate-300 font-bold text-sm">Cancelar</button>
+              <button onClick={() => setSelecionado(null)} className="w-full py-1 text-slate-300 font-bold text-xs md:text-sm cursor-pointer">Cancelar</button>
             </div>
           </div>
         </div>
@@ -558,22 +589,28 @@ export default function App() {
       {/* MODAL SUCESSO / PIX */}
       {qr && (
         <div className="fixed inset-0 bg-pink-900/60 backdrop-blur-xl flex items-center justify-center z-50 p-4 animate-in fade-in duration-500">
-          <div className="bg-white rounded-[3.5rem] shadow-2xl w-full max-w-sm overflow-hidden text-center animate-in slide-in-from-bottom duration-500">
-            <div className="bg-pink-600 p-10 text-white text-center">
-              <div className="bg-white/20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <CheckCircle className="w-12 h-12 text-white" />
+          <div className="bg-white rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl w-full max-w-sm overflow-hidden text-center animate-in slide-in-from-bottom duration-500 relative">
+            <button 
+              onClick={() => { setQr(""); setSelecionado(null); setNome(""); setTelefone(""); setWhatsappMsg(""); }}
+              className="absolute top-4 right-4 p-2 hover:bg-pink-50 rounded-full transition-colors cursor-pointer text-pink-300 hover:text-pink-600"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <div className="bg-pink-600 p-6 md:p-10 text-white text-center">
+              <div className="bg-white/20 w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+                <CheckCircle className="w-10 h-10 md:w-12 h-12 text-white" />
               </div>
-              <h2 className="text-2xl font-bold mb-2">Muito Obrigado!</h2>
-              <p className="opacity-90 italic">Sua escolha nos deixou muito felizes.</p>
+              <h2 className="text-xl md:text-2xl font-bold mb-1 md:mb-2">Muito Obrigado!</h2>
+              <p className="text-sm md:text-base opacity-90 italic">Sua escolha nos deixou muito felizes.</p>
             </div>
-            <div className="p-10">
-              <div className="bg-pink-50 p-6 rounded-[2.5rem] border-2 border-dashed border-pink-100 mb-8 inline-block shadow-inner">
-                <img src={qr} className="w-48 h-48 mx-auto rounded-xl" />
+            <div className="p-6 md:p-10">
+              <div className="bg-pink-50 p-4 md:p-6 rounded-[2rem] md:rounded-[2.5rem] border-2 border-dashed border-pink-100 mb-6 md:mb-8 inline-block shadow-inner">
+                <img src={qr} className="w-36 h-36 md:w-48 h-48 mx-auto rounded-xl" />
               </div>
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 <button 
                   onClick={() => { navigator.clipboard.writeText(pixCopiaECola); alert("Copiado!"); }} 
-                  className="w-full border-2 border-pink-100 text-pink-600 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-pink-50 transition-all active:scale-95"
+                  className="w-full border-2 border-pink-100 text-pink-600 font-bold py-3 md:py-4 rounded-xl md:rounded-2xl flex items-center justify-center gap-2 hover:bg-pink-50 transition-all active:scale-95 text-sm md:text-base cursor-pointer"
                 >
                   <Copy className="w-4 h-4"/> Copiar Pix
                 </button>
@@ -581,7 +618,7 @@ export default function App() {
                   <a 
                     href={selecionado.linkCompra} 
                     target="_blank" 
-                    className="w-full bg-slate-800 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg hover:bg-slate-900 transition-all"
+                    className="w-full bg-slate-800 text-white font-bold py-3 md:py-4 rounded-xl md:rounded-2xl flex items-center justify-center gap-2 shadow-lg hover:bg-slate-900 transition-all text-sm md:text-base cursor-pointer"
                   >
                     <ShoppingBag className="w-4 h-4"/> Comprar Online
                   </a>
@@ -595,7 +632,7 @@ export default function App() {
                     setTelefone(""); 
                     setWhatsappMsg("");
                   }} 
-                  className="w-full text-slate-400 font-black uppercase tracking-widest text-xs py-4 hover:text-slate-600 transition-colors"
+                  className="w-full text-slate-400 font-black uppercase tracking-widest text-[10px] md:text-xs py-3 md:py-4 hover:text-slate-600 transition-colors cursor-pointer"
                 >
                   Concluído
                 </button>
