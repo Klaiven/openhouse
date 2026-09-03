@@ -238,8 +238,6 @@ export default function App() {
         `*CHAVE PIX (Copia e Cola):*\n${payload}\n\n` +
         `*Reservado por:* ${nome}`;
 
-        
-      
       setWhatsappMsg(encodeURIComponent(msg));
 
       // Notificação Automática via Telegram (Ocorre em background)
@@ -272,6 +270,26 @@ export default function App() {
       alert("Usuário adicionado à lista.");
     } catch (e) { alert(e.message); }
   };
+
+  // --- LÓGICA DE ORGANIZAÇÃO DOS PRODUTOS (SEPARAÇÃO POR PIX E PRESENTES) ---
+  const pixDisponiveis = produtos.filter(p => !p.linkCompra && !p.reservado);
+  const presentesDisponiveis = produtos.filter(p => p.linkCompra && !p.reservado);
+  const reservados = produtos.filter(p => p.reservado);
+
+  const itemsParaRenderizar = [];
+  if (pixDisponiveis.length > 0) {
+    itemsParaRenderizar.push({ isHeader: true, id: 'header-pix', title: 'Opções em PIX' });
+    itemsParaRenderizar.push(...pixDisponiveis);
+  }
+  if (presentesDisponiveis.length > 0) {
+    itemsParaRenderizar.push({ isHeader: true, id: 'header-presentes', title: 'Presentes' });
+    itemsParaRenderizar.push(...presentesDisponiveis);
+  }
+  if (reservados.length > 0) {
+    itemsParaRenderizar.push({ isHeader: true, id: 'header-reservados', title: 'Já Reservados 💖' });
+    itemsParaRenderizar.push(...reservados);
+  }
+  // -------------------------------------------------------------------------
 
   return (
     <div className="min-h-screen bg-pink-50 font-sans text-slate-900 pb-20 selection:bg-pink-200">
@@ -355,81 +373,96 @@ export default function App() {
               <p className="text-pink-300 text-sm font-medium italic">Preparando a lista com carinho...</p>
             </div>
           ) : (
-            produtos.map((p) => (
-              <div 
-                key={p.id} 
-                className="bg-white rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-pink-50 flex flex-col relative group hover:-translate-y-1"
-              >
-                {user && (
-                  <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 translate-y-1 group-hover:translate-y-0">
-                    {p.reservado && (
-                      <button 
-                        onClick={() => removerReserva(p.id)} 
-                        className="bg-white/90 p-2 rounded-full text-orange-500 shadow-md hover:bg-orange-50 hover:scale-110 active:scale-95 cursor-pointer"
-                        title="Liberar Reserva"
-                      >
-                        <Unlock className="w-3.5 h-3.5" />
-                      </button>
-                    )}
-                    {p.linkCompra && (
-                      <a 
-                        href={p.linkCompra}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-white/90 p-2 rounded-full text-emerald-500 shadow-md hover:bg-emerald-50 hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer"
-                        title="Ver na Loja"
-                      >
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
-                    )}
-                    <button 
-                      onClick={() => { setEditando(p); setNovoProd(p); setIsAdminMode(true); }} 
-                      className="bg-white/90 p-2 rounded-full text-blue-500 shadow-md hover:bg-blue-50 hover:scale-110 active:scale-95 cursor-pointer"
-                    >
-                      <Edit2 className="w-3.5 h-3.5" />
-                    </button>
-                    <button 
-                      onClick={() => deletarProduto(p.id)} 
-                      className="bg-white/90 p-2 rounded-full text-red-500 shadow-md hover:bg-red-50 hover:scale-110 active:scale-95 cursor-pointer"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+            itemsParaRenderizar.map((item) => {
+              // Verifica se o item atual do loop é um Cabeçalho (Separador)
+              if (item.isHeader) {
+                return (
+                  <div key={item.id} className="col-span-full flex items-center gap-4 mt-6 md:mt-10 mb-2 first:mt-0">
+                    <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent to-pink-200"></div>
+                    <h2 className="text-2xl md:text-3xl font-serif font-bold text-pink-800 text-center">{item.title}</h2>
+                    <div className="h-[2px] flex-1 bg-gradient-to-l from-transparent to-pink-200"></div>
                   </div>
-                )}
-                <div className="relative h-40 md:h-64 overflow-hidden">
-                  <img 
-                    src={p.linkImagem || "https://via.placeholder.com/400x400?text=Presente"} 
-                    className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                  />
-                  {p.reservado && (
-                    <div className="absolute inset-0 bg-white/40 backdrop-blur-[1px] flex items-center justify-center">
-                      <div className="bg-white/90 px-3 md:px-6 py-1 md:py-2 rounded-full shadow-md border border-pink-100">
-                        <span className="text-[10px] md:text-xs font-black text-pink-600 uppercase tracking-widest">Reservado</span>
-                      </div>
+                );
+              }
+
+              // Se não for cabeçalho, é um produto
+              const p = item;
+              return (
+                <div 
+                  key={p.id} 
+                  className={`bg-white rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-pink-50 flex flex-col relative group hover:-translate-y-1 ${p.reservado ? 'opacity-80' : ''}`}
+                >
+                  {user && (
+                    <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 translate-y-1 group-hover:translate-y-0">
+                      {p.reservado && (
+                        <button 
+                          onClick={() => removerReserva(p.id)} 
+                          className="bg-white/90 p-2 rounded-full text-orange-500 shadow-md hover:bg-orange-50 hover:scale-110 active:scale-95 cursor-pointer"
+                          title="Liberar Reserva"
+                        >
+                          <Unlock className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                      {p.linkCompra && (
+                        <a 
+                          href={p.linkCompra}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-white/90 p-2 rounded-full text-emerald-500 shadow-md hover:bg-emerald-50 hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer"
+                          title="Ver na Loja"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                      <button 
+                        onClick={() => { setEditando(p); setNovoProd(p); setIsAdminMode(true); }} 
+                        className="bg-white/90 p-2 rounded-full text-blue-500 shadow-md hover:bg-blue-50 hover:scale-110 active:scale-95 cursor-pointer"
+                      >
+                        <Edit2 className="w-3.5 h-3.5" />
+                      </button>
+                      <button 
+                        onClick={() => deletarProduto(p.id)} 
+                        className="bg-white/90 p-2 rounded-full text-red-500 shadow-md hover:bg-red-50 hover:scale-110 active:scale-95 cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   )}
-                </div>
-                <div className="p-4 md:p-8 flex-grow flex flex-col text-center">
-                  <h2 className="text-sm md:text-xl font-bold text-slate-800 mb-1 md:mb-2 leading-tight line-clamp-2">{p.nome}</h2>
-                  <p className="text-pink-600 font-black text-base md:text-2xl mb-3 md:mb-6 tracking-tight">R$ {p.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                  <div className="mt-auto">
-                    {p.reservado ? (
-                      <div className="bg-pink-50 p-2 md:p-4 rounded-xl md:rounded-2xl border border-pink-100 text-[10px] md:text-sm">
-                        <p className="text-pink-300 uppercase font-bold text-[8px] md:text-[10px] mb-0.5 md:mb-1 tracking-widest">Escolhido por</p>
-                        <p className="text-pink-700 font-bold truncate">{p.reservadoPor}</p>
+                  <div className="relative h-40 md:h-64 overflow-hidden">
+                    <img 
+                      src={p.linkImagem || "https://via.placeholder.com/400x400?text=Presente"} 
+                      className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                    />
+                    {p.reservado && (
+                      <div className="absolute inset-0 bg-white/40 backdrop-blur-[1px] flex items-center justify-center">
+                        <div className="bg-white/90 px-3 md:px-6 py-1 md:py-2 rounded-full shadow-md border border-pink-100">
+                          <span className="text-[10px] md:text-xs font-black text-pink-600 uppercase tracking-widest">Reservado</span>
+                        </div>
                       </div>
-                    ) : (
-                      <button 
-                        onClick={() => setSelecionado(p)} 
-                        className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2.5 md:py-4 rounded-xl md:rounded-2xl shadow-md hover:shadow-pink-200 transition-all flex items-center justify-center gap-1.5 md:gap-2 active:scale-95 text-xs md:text-base cursor-pointer"
-                      >
-                        <Gift className="w-4 h-4 md:w-5 h-5" /> Presentear
-                      </button>
                     )}
                   </div>
+                  <div className="p-4 md:p-8 flex-grow flex flex-col text-center">
+                    <h2 className="text-sm md:text-xl font-bold text-slate-800 mb-1 md:mb-2 leading-tight line-clamp-2">{p.nome}</h2>
+                    <p className="text-pink-600 font-black text-base md:text-2xl mb-3 md:mb-6 tracking-tight">R$ {p.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    <div className="mt-auto">
+                      {p.reservado ? (
+                        <div className="bg-pink-50 p-2 md:p-4 rounded-xl md:rounded-2xl border border-pink-100 text-[10px] md:text-sm">
+                          <p className="text-pink-300 uppercase font-bold text-[8px] md:text-[10px] mb-0.5 md:mb-1 tracking-widest">Escolhido por</p>
+                          <p className="text-pink-700 font-bold truncate">{p.reservadoPor}</p>
+                        </div>
+                      ) : (
+                        <button 
+                          onClick={() => setSelecionado(p)} 
+                          className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2.5 md:py-4 rounded-xl md:rounded-2xl shadow-md hover:shadow-pink-200 transition-all flex items-center justify-center gap-1.5 md:gap-2 active:scale-95 text-xs md:text-base cursor-pointer"
+                        >
+                          <Gift className="w-4 h-4 md:w-5 h-5" /> Presentear
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </main>
