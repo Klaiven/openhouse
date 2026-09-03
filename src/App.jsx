@@ -241,31 +241,36 @@ export default function App() {
       setWhatsappMsg(encodeURIComponent(msg));
 
       // Notificação Automática via Telegram (Ocorre em background)
-// Notificação Automática via Telegram (Ocorre em background)
       if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
-        const text = encodeURIComponent(
-          `🔔 *NOVA RESERVA!*\n\n` +
-          `👤 *De:* ${nome}\n` +
-          `📱 *WhatsApp:* ${telefone}\n` +
-          `🎁 *Presente:* ${selecionado.nome}\n` +
-          `💰 *Valor:* R$ ${selecionado.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
-        );
+        const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
         
-        console.log("Enviando para o Telegram...", TELEGRAM_CHAT_ID);
+        // Criando o corpo da mensagem em formato JSON
+        const bodyData = {
+          chat_id: TELEGRAM_CHAT_ID,
+          parse_mode: "Markdown",
+          text: `🔔 *NOVA RESERVA!*\n\n👤 *De:* ${nome}\n📱 *WhatsApp:* ${telefone}\n🎁 *Presente:* ${selecionado.nome}\n💰 *Valor:* R$ ${selecionado.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+        };
 
-        fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${text}&parse_mode=Markdown`)
+        fetch(telegramUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(bodyData)
+        })
           .then(res => res.json())
           .then(data => {
             if (!data.ok) {
-              console.error("❌ Erro do Telegram:", data);
-              alert("Erro no Telegram: " + data.description); // Mostra o erro na tela para você debugar
+              console.error("Erro na resposta do Telegram:", data);
             } else {
               console.log("✅ Mensagem enviada com sucesso ao Telegram!");
             }
           })
-          .catch(err => console.error("❌ Erro de conexão com o Telegram:", err));
-      } else {
-         console.warn("⚠️ Tokens do Telegram não encontrados no .env!");
+          .catch(err => {
+            console.error("❌ Falha de CORS ou Rede:", err);
+            // Aviso útil se o bloqueador barrar a requisição
+            console.warn("Se você está vendo um erro de CORS, desative o AdBlock/uBlock ou a Proteção contra Rastreamento do navegador para testar.");
+          });
       }
 
     } catch (e) { alert(e); }
