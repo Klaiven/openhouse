@@ -241,6 +241,7 @@ export default function App() {
       setWhatsappMsg(encodeURIComponent(msg));
 
       // Notificação Automática via Telegram (Ocorre em background)
+// Notificação Automática via Telegram (Ocorre em background)
       if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
         const text = encodeURIComponent(
           `🔔 *NOVA RESERVA!*\n\n` +
@@ -250,12 +251,21 @@ export default function App() {
           `💰 *Valor:* R$ ${selecionado.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
         );
         
+        console.log("Enviando para o Telegram...", TELEGRAM_CHAT_ID);
+
         fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage?chat_id=${TELEGRAM_CHAT_ID}&text=${text}&parse_mode=Markdown`)
           .then(res => res.json())
           .then(data => {
-            if (!data.ok) console.error("Erro no Telegram:", data.description);
+            if (!data.ok) {
+              console.error("❌ Erro do Telegram:", data);
+              alert("Erro no Telegram: " + data.description); // Mostra o erro na tela para você debugar
+            } else {
+              console.log("✅ Mensagem enviada com sucesso ao Telegram!");
+            }
           })
-          .catch(err => console.error("Erro ao conectar ao Telegram:", err));
+          .catch(err => console.error("❌ Erro de conexão com o Telegram:", err));
+      } else {
+         console.warn("⚠️ Tokens do Telegram não encontrados no .env!");
       }
 
     } catch (e) { alert(e); }
