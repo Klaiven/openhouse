@@ -292,13 +292,13 @@ export default function App() {
   const reservados = produtos.filter(p => p.reservado);
 
   const itemsParaRenderizar = [];
-  if (pixDisponiveis.length > 0) {
-    itemsParaRenderizar.push({ isHeader: true, id: 'header-pix', title: 'Opções em PIX' });
-    itemsParaRenderizar.push(...pixDisponiveis);
-  }
   if (presentesDisponiveis.length > 0) {
     itemsParaRenderizar.push({ isHeader: true, id: 'header-presentes', title: 'Presentes' });
     itemsParaRenderizar.push(...presentesDisponiveis);
+  }
+    if (pixDisponiveis.length > 0) {
+    itemsParaRenderizar.push({ isHeader: true, id: 'header-pix', title: 'Opções em PIX' });
+    itemsParaRenderizar.push(...pixDisponiveis);
   }
   if (reservados.length > 0) {
     itemsParaRenderizar.push({ isHeader: true, id: 'header-reservados', title: 'Já Reservados 💖' });
