@@ -227,7 +227,7 @@ export default function App() {
       });
       const payload = generatePixPayload(CHAVE_PIX_DESTINO, parseFloat(selecionado.valor));
       setPixCopiaECola(payload);
-      setQr(await QRCode.toDataURL(payload, { width: 300, margin: 2, color: { dark: "#be185d", light: "#ffffff" } }));
+      setQr(await QRCode.toDataURL(payload, { width: 300, margin: 2, color: { dark: "#556b2f", light: "#ffffff" } }));
       
       const msg = 
         `*RESERVA DE PRESENTE - NOSSO NOVO LAR*\n\n` +
@@ -244,7 +244,6 @@ export default function App() {
       if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
         const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
         
-        // Criando o corpo da mensagem em formato JSON
         const bodyData = {
           chat_id: TELEGRAM_CHAT_ID,
           parse_mode: "Markdown",
@@ -268,7 +267,6 @@ export default function App() {
           })
           .catch(err => {
             console.error("❌ Falha de CORS ou Rede:", err);
-            // Aviso útil se o bloqueador barrar a requisição
             console.warn("Se você está vendo um erro de CORS, desative o AdBlock/uBlock ou a Proteção contra Rastreamento do navegador para testar.");
           });
       }
@@ -296,18 +294,18 @@ export default function App() {
     itemsParaRenderizar.push({ isHeader: true, id: 'header-presentes', title: 'Presentes' });
     itemsParaRenderizar.push(...presentesDisponiveis);
   }
-    if (pixDisponiveis.length > 0) {
+  if (pixDisponiveis.length > 0) {
     itemsParaRenderizar.push({ isHeader: true, id: 'header-pix', title: 'Opções em PIX' });
     itemsParaRenderizar.push(...pixDisponiveis);
   }
   if (reservados.length > 0) {
-    itemsParaRenderizar.push({ isHeader: true, id: 'header-reservados', title: 'Já Reservados 💖' });
+    itemsParaRenderizar.push({ isHeader: true, id: 'header-reservados', title: 'Já Reservados 💚' });
     itemsParaRenderizar.push(...reservados);
   }
   // -------------------------------------------------------------------------
 
   return (
-    <div className="min-h-screen bg-pink-50 font-sans text-slate-900 pb-20 selection:bg-pink-200">
+    <div className="min-h-screen bg-[#FFFFF0] font-sans text-[#556b2f] pb-20 selection:bg-[#E2E2C5] selection:text-[#556b2f]">
       {/* Botões Admin Flutuantes */}
       <div className="fixed bottom-6 right-6 flex flex-col gap-3 z-40 animate-in slide-in-from-right duration-500">
         {user ? (
@@ -315,21 +313,21 @@ export default function App() {
             <button 
               onClick={() => setShowUserAdmin(true)} 
               title="Gerenciar Usuários"
-              className="bg-slate-800 text-white p-4 rounded-full shadow-2xl hover:bg-slate-900 transition-all hover:scale-110 active:scale-95 group cursor-pointer"
+              className="bg-[#556b2f] text-[#FFFFF0] p-4 rounded-full shadow-2xl hover:bg-[#445724] transition-all hover:scale-110 active:scale-95 group cursor-pointer"
             >
               <Settings className="w-6 h-6 group-hover:rotate-90 transition-transform duration-500" />
             </button>
             <button 
               onClick={() => { setIsAdminMode(true); setEditando(null); setNovoProd({ nome: "", valor: "", linkCompra: "", linkImagem: "" }); }} 
               title="Novo Presente"
-              className="bg-pink-600 text-white p-4 rounded-full shadow-2xl hover:bg-pink-700 transition-all hover:scale-110 active:scale-95 cursor-pointer"
+              className="bg-[#808000] text-[#FFFFF0] p-4 rounded-full shadow-2xl hover:bg-[#666600] transition-all hover:scale-110 active:scale-95 cursor-pointer"
             >
               <Plus className="w-6 h-6" />
             </button>
             <button 
               onClick={() => signOut(auth)} 
               title="Sair"
-              className="bg-white text-pink-600 p-4 rounded-full shadow-2xl border border-pink-100 hover:bg-pink-50 transition-all hover:scale-110 active:scale-95 cursor-pointer"
+              className="bg-white text-[#808000] p-4 rounded-full shadow-2xl border border-[#E2E2C5] hover:bg-[#F7F7E6] transition-all hover:scale-110 active:scale-95 cursor-pointer"
             >
               <LogOut className="w-6 h-6" />
             </button>
@@ -337,7 +335,7 @@ export default function App() {
         ) : (
           <button 
             onClick={() => setShowLogin(true)} 
-            className="bg-pink-600 text-white p-4 rounded-full shadow-2xl hover:bg-pink-700 transition-all hover:scale-110 active:scale-95 flex items-center gap-2 group cursor-pointer"
+            className="bg-[#808000] text-[#FFFFF0] p-4 rounded-full shadow-2xl hover:bg-[#666600] transition-all hover:scale-110 active:scale-95 flex items-center gap-2 group cursor-pointer"
           >
             <LogIn className="w-6 h-6" />
             <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 font-bold whitespace-nowrap">Admin</span>
@@ -346,35 +344,35 @@ export default function App() {
       </div>
 
       {/* Header Estilo Delicado */}
-      <header className="bg-white border-b border-pink-100 py-8 md:py-12 px-6 text-center shadow-sm relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-pink-200 via-pink-400 to-pink-200 opacity-50"></div>
+      <header className="bg-white/80 backdrop-blur-sm border-b border-[#E2E2C5] py-8 md:py-12 px-6 text-center shadow-sm relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#E2E2C5] via-[#808000] to-[#E2E2C5] opacity-60"></div>
         <div className="max-w-3xl mx-auto relative animate-in fade-in zoom-in duration-1000">
           
           {/* Foto do Casal Personalizada */}
           <div className="relative inline-block mb-6">
-            <div className="absolute -inset-1.5 bg-gradient-to-tr from-pink-400 to-pink-200 rounded-[2rem] rotate-3 opacity-30 blur-sm"></div>
-            <div className="relative w-32 h-40 md:w-44 md:h-56 overflow-hidden rounded-[1.8rem] shadow-xl border-4 border-white transform hover:rotate-0 transition-transform duration-500 -rotate-3">
+            <div className="absolute -inset-1.5 bg-gradient-to-tr from-[#808000] to-[#D4D4A8] rounded-[2rem] rotate-3 opacity-30 blur-sm"></div>
+            <div className="relative w-32 h-40 md:w-44 md:h-56 overflow-hidden rounded-[1.8rem] shadow-xl border-4 border-[#FFFFF0] transform hover:rotate-0 transition-transform duration-500 -rotate-3">
               <img 
                 src="https://i.ibb.co/3DtKJFG/DSC03661.jpg" 
                 alt="Ialy e Klaiven"
                 className="w-full h-full object-cover"
                 onError={(e) => {
-                  e.target.src = "https://i.ibb.co/680L6Xg/IMG-20240324-152207.jpg"; // Alternativa caso falhe
+                  e.target.src = "https://i.ibb.co/680L6Xg/IMG-20240324-152207.jpg";
                 }}
               />
             </div>
           </div>
 
-          <h1 className="text-3xl md:text-5xl font-serif font-bold text-pink-800 mb-2 tracking-tight text-nowrap">Ialy & Klaiven</h1>
-          <p className="text-lg md:text-xl font-medium text-pink-600 mb-4 italic">Nosso Chá de Casa Nova</p>
-          <p className="text-sm md:text-base text-slate-500 font-medium max-w-lg mx-auto leading-relaxed">
+          <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#556b2f] mb-2 tracking-tight text-nowrap">Ialy & Klaiven</h1>
+          <p className="text-lg md:text-xl font-medium text-[#808000] mb-4 italic">Nosso Chá de Casa Nova</p>
+          <p className="text-sm md:text-base text-[#708248] font-medium max-w-lg mx-auto leading-relaxed">
             "Estamos começando um novo capítulo da nossa história indo morar juntos! Criamos essa lista para você fazer parte desse momento especial da nossa vida."
           </p>
           
           <div className="flex items-center justify-center gap-3 mt-6">
-            <div className="h-[1px] w-10 bg-pink-200"></div>
-            <Heart className="text-pink-300 fill-pink-300 w-4 h-4 animate-pulse" />
-            <div className="h-[1px] w-10 bg-pink-200"></div>
+            <div className="h-[1px] w-10 bg-[#D4D4A8]"></div>
+            <Heart className="text-[#808000] fill-[#808000]/40 w-4 h-4 animate-pulse" />
+            <div className="h-[1px] w-10 bg-[#D4D4A8]"></div>
           </div>
         </div>
       </header>
@@ -384,35 +382,33 @@ export default function App() {
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-8">
           {produtos.length === 0 ? (
             <div className="col-span-full py-20 text-center">
-              <Loader2 className="w-8 h-8 text-pink-300 animate-spin mx-auto mb-4" />
-              <p className="text-pink-300 text-sm font-medium italic">Preparando a lista com carinho...</p>
+              <Loader2 className="w-8 h-8 text-[#808000] animate-spin mx-auto mb-4" />
+              <p className="text-[#708248] text-sm font-medium italic">Preparando a lista com carinho...</p>
             </div>
           ) : (
             itemsParaRenderizar.map((item) => {
-              // Verifica se o item atual do loop é um Cabeçalho (Separador)
               if (item.isHeader) {
                 return (
                   <div key={item.id} className="col-span-full flex items-center gap-4 mt-6 md:mt-10 mb-2 first:mt-0">
-                    <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent to-pink-200"></div>
-                    <h2 className="text-2xl md:text-3xl font-serif font-bold text-pink-800 text-center">{item.title}</h2>
-                    <div className="h-[2px] flex-1 bg-gradient-to-l from-transparent to-pink-200"></div>
+                    <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent to-[#D4D4A8]"></div>
+                    <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#556b2f] text-center">{item.title}</h2>
+                    <div className="h-[2px] flex-1 bg-gradient-to-l from-transparent to-[#D4D4A8]"></div>
                   </div>
                 );
               }
 
-              // Se não for cabeçalho, é um produto
               const p = item;
               return (
                 <div 
                   key={p.id} 
-                  className={`bg-white rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-pink-50 flex flex-col relative group hover:-translate-y-1 ${p.reservado ? 'opacity-80' : ''}`}
+                  className={`bg-white rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-xl hover:shadow-[#808000]/10 transition-all duration-500 border border-[#E2E2C5] flex flex-col relative group hover:-translate-y-1 ${p.reservado ? 'opacity-80' : ''}`}
                 >
                   {user && (
                     <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 translate-y-1 group-hover:translate-y-0">
                       {p.reservado && (
                         <button 
                           onClick={() => removerReserva(p.id)} 
-                          className="bg-white/90 p-2 rounded-full text-orange-500 shadow-md hover:bg-orange-50 hover:scale-110 active:scale-95 cursor-pointer"
+                          className="bg-white/95 p-2 rounded-full text-amber-600 shadow-md hover:bg-amber-50 hover:scale-110 active:scale-95 cursor-pointer"
                           title="Liberar Reserva"
                         >
                           <Unlock className="w-3.5 h-3.5" />
@@ -423,7 +419,7 @@ export default function App() {
                           href={p.linkCompra}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="bg-white/90 p-2 rounded-full text-emerald-500 shadow-md hover:bg-emerald-50 hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer"
+                          className="bg-white/95 p-2 rounded-full text-[#556b2f] shadow-md hover:bg-[#F7F7E6] hover:scale-110 active:scale-95 flex items-center justify-center cursor-pointer"
                           title="Ver na Loja"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
@@ -431,44 +427,44 @@ export default function App() {
                       )}
                       <button 
                         onClick={() => { setEditando(p); setNovoProd(p); setIsAdminMode(true); }} 
-                        className="bg-white/90 p-2 rounded-full text-blue-500 shadow-md hover:bg-blue-50 hover:scale-110 active:scale-95 cursor-pointer"
+                        className="bg-white/95 p-2 rounded-full text-[#808000] shadow-md hover:bg-[#F7F7E6] hover:scale-110 active:scale-95 cursor-pointer"
                       >
                         <Edit2 className="w-3.5 h-3.5" />
                       </button>
                       <button 
                         onClick={() => deletarProduto(p.id)} 
-                        className="bg-white/90 p-2 rounded-full text-red-500 shadow-md hover:bg-red-50 hover:scale-110 active:scale-95 cursor-pointer"
+                        className="bg-white/95 p-2 rounded-full text-red-600 shadow-md hover:bg-red-50 hover:scale-110 active:scale-95 cursor-pointer"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   )}
-                  <div className="relative h-40 md:h-64 overflow-hidden">
+                  <div className="relative h-40 md:h-64 overflow-hidden bg-[#F7F7E6]">
                     <img 
                       src={p.linkImagem || "https://via.placeholder.com/400x400?text=Presente"} 
                       className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-700" 
                     />
                     {p.reservado && (
-                      <div className="absolute inset-0 bg-white/40 backdrop-blur-[1px] flex items-center justify-center">
-                        <div className="bg-white/90 px-3 md:px-6 py-1 md:py-2 rounded-full shadow-md border border-pink-100">
-                          <span className="text-[10px] md:text-xs font-black text-pink-600 uppercase tracking-widest">Reservado</span>
+                      <div className="absolute inset-0 bg-[#FFFFF0]/50 backdrop-blur-[1px] flex items-center justify-center">
+                        <div className="bg-white/95 px-3 md:px-6 py-1 md:py-2 rounded-full shadow-md border border-[#E2E2C5]">
+                          <span className="text-[10px] md:text-xs font-black text-[#556b2f] uppercase tracking-widest">Reservado</span>
                         </div>
                       </div>
                     )}
                   </div>
                   <div className="p-4 md:p-8 flex-grow flex flex-col text-center">
-                    <h2 className="text-sm md:text-xl font-bold text-slate-800 mb-1 md:mb-2 leading-tight line-clamp-2">{p.nome}</h2>
-                    <p className="text-pink-600 font-black text-base md:text-2xl mb-3 md:mb-6 tracking-tight">R$ {p.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                    <h2 className="text-sm md:text-xl font-bold text-[#556b2f] mb-1 md:mb-2 leading-tight line-clamp-2">{p.nome}</h2>
+                    <p className="text-[#808000] font-black text-base md:text-2xl mb-3 md:mb-6 tracking-tight">R$ {p.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                     <div className="mt-auto">
                       {p.reservado ? (
-                        <div className="bg-pink-50 p-2 md:p-4 rounded-xl md:rounded-2xl border border-pink-100 text-[10px] md:text-sm">
-                          <p className="text-pink-300 uppercase font-bold text-[8px] md:text-[10px] mb-0.5 md:mb-1 tracking-widest">Escolhido por</p>
-                          <p className="text-pink-700 font-bold truncate">{p.reservadoPor}</p>
+                        <div className="bg-[#F7F7E6] p-2 md:p-4 rounded-xl md:rounded-2xl border border-[#E2E2C5] text-[10px] md:text-sm">
+                          <p className="text-[#8B9A63] uppercase font-bold text-[8px] md:text-[10px] mb-0.5 md:mb-1 tracking-widest">Escolhido por</p>
+                          <p className="text-[#556b2f] font-bold truncate">{p.reservadoPor}</p>
                         </div>
                       ) : (
                         <button 
                           onClick={() => setSelecionado(p)} 
-                          className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-2.5 md:py-4 rounded-xl md:rounded-2xl shadow-md hover:shadow-pink-200 transition-all flex items-center justify-center gap-1.5 md:gap-2 active:scale-95 text-xs md:text-base cursor-pointer"
+                          className="w-full bg-[#808000] hover:bg-[#666600] text-[#FFFFF0] font-bold py-2.5 md:py-4 rounded-xl md:rounded-2xl shadow-md hover:shadow-[#808000]/30 transition-all flex items-center justify-center gap-1.5 md:gap-2 active:scale-95 text-xs md:text-base cursor-pointer"
                         >
                           <Gift className="w-4 h-4 md:w-5 h-5" /> Presentear
                         </button>
@@ -484,35 +480,35 @@ export default function App() {
 
       {/* MODAL LOGIN COM ANIMAÇÃO */}
       {showLogin && (
-        <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
-          <div className={`bg-white rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 w-full max-w-sm shadow-2xl transition-all duration-500 transform ${isLoggingIn ? 'scale-95 opacity-50' : 'scale-100'}`}>
-            <div className="bg-pink-50 w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto mb-6 md:mb-8 shadow-inner">
-              <LogIn className="w-8 h-8 md:w-10 md:h-10 text-pink-500" />
+        <div className="fixed inset-0 bg-[#2C3818]/40 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
+          <div className={`bg-[#FFFFF0] border border-[#E2E2C5] rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 w-full max-w-sm shadow-2xl transition-all duration-500 transform ${isLoggingIn ? 'scale-95 opacity-50' : 'scale-100'}`}>
+            <div className="bg-[#EFEFD8] w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto mb-6 md:mb-8 shadow-inner">
+              <LogIn className="w-8 h-8 md:w-10 md:h-10 text-[#808000]" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-800 text-center mb-6 md:mb-8">Olá, Admin!</h2>
+            <h2 className="text-2xl md:text-3xl font-bold text-[#556b2f] text-center mb-6 md:mb-8">Olá, Admin!</h2>
             <div className="space-y-3 md:space-y-4">
               <input 
                 type="email" 
                 placeholder="E-mail" 
                 value={emailLogin} 
                 onChange={e => setEmailLogin(e.target.value)} 
-                className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all text-center text-sm md:text-base" 
+                className="w-full p-3 md:p-4 bg-white border border-[#E2E2C5] text-[#556b2f] placeholder-[#8B9A63] rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-[#808000]/20 transition-all text-center text-sm md:text-base" 
               />
               <input 
                 type="password" 
                 placeholder="Senha" 
                 value={passLogin} 
                 onChange={e => setPassLogin(e.target.value)} 
-                className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all text-center text-sm md:text-base" 
+                className="w-full p-3 md:p-4 bg-white border border-[#E2E2C5] text-[#556b2f] placeholder-[#8B9A63] rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-[#808000]/20 transition-all text-center text-sm md:text-base" 
               />
               <button 
                 onClick={handleLogin} 
                 disabled={isLoggingIn}
-                className="w-full bg-pink-600 text-white font-bold py-4 md:py-5 rounded-xl md:rounded-2xl hover:bg-pink-700 transition-all flex items-center justify-center gap-2 md:gap-3 shadow-xl active:scale-95 disabled:opacity-50 text-sm md:text-base"
+                className="w-full bg-[#808000] text-[#FFFFF0] font-bold py-4 md:py-5 rounded-xl md:rounded-2xl hover:bg-[#666600] transition-all flex items-center justify-center gap-2 md:gap-3 shadow-xl active:scale-95 disabled:opacity-50 text-sm md:text-base cursor-pointer"
               >
                 {isLoggingIn ? <Loader2 className="w-5 h-5 md:w-6 h-6 animate-spin" /> : "Acessar Painel"}
               </button>
-              <button onClick={() => setShowLogin(false)} className="w-full text-slate-400 font-bold py-2 text-xs md:text-sm hover:text-slate-600 transition-colors">Voltar para o site</button>
+              <button onClick={() => setShowLogin(false)} className="w-full text-[#708248] font-bold py-2 text-xs md:text-sm hover:text-[#556b2f] transition-colors cursor-pointer">Voltar para o site</button>
             </div>
           </div>
         </div>
@@ -520,17 +516,17 @@ export default function App() {
 
       {/* MODAL CRUD PRODUTO (ImgBB API) */}
       {isAdminMode && (
-        <div className="fixed inset-0 bg-pink-900/20 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
-          <div className="bg-white rounded-[2rem] md:rounded-[3rem] w-full max-w-lg shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-500">
-            <div className="bg-pink-50 p-6 md:p-8 flex justify-between items-center border-b border-pink-100">
-              <h2 className="text-xl md:text-2xl font-bold text-pink-800">{editando ? "Editar Presente" : "Novo Presente"}</h2>
-              <button onClick={() => setIsAdminMode(false)} className="p-2 hover:bg-pink-200 rounded-full transition-colors">
-                <X className="text-pink-400 w-5 h-5 md:w-6 h-6" />
+        <div className="fixed inset-0 bg-[#2C3818]/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-300">
+          <div className="bg-[#FFFFF0] border border-[#E2E2C5] rounded-[2rem] md:rounded-[3rem] w-full max-w-lg shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-500">
+            <div className="bg-[#EFEFD8] p-6 md:p-8 flex justify-between items-center border-b border-[#E2E2C5]">
+              <h2 className="text-xl md:text-2xl font-bold text-[#556b2f]">{editando ? "Editar Presente" : "Novo Presente"}</h2>
+              <button onClick={() => setIsAdminMode(false)} className="p-2 hover:bg-[#E2E2C5] rounded-full transition-colors cursor-pointer">
+                <X className="text-[#556b2f] w-5 h-5 md:w-6 h-6" />
               </button>
             </div>
             <div className="p-6 md:p-10 space-y-4 md:space-y-6">
               <div className="flex justify-center">
-                <label className="cursor-pointer group relative w-full h-32 md:h-48 bg-pink-50 border-4 border-dashed border-pink-100 rounded-[1.5rem] md:rounded-[2.5rem] flex flex-col items-center justify-center hover:bg-pink-100 transition-all overflow-hidden shadow-inner">
+                <label className="cursor-pointer group relative w-full h-32 md:h-48 bg-[#F7F7E6] border-4 border-dashed border-[#D4D4A8] rounded-[1.5rem] md:rounded-[2.5rem] flex flex-col items-center justify-center hover:bg-[#EFEFD8] transition-all overflow-hidden shadow-inner">
                   {imgFile || novoProd.linkImagem ? (
                     <img 
                       src={imgFile ? URL.createObjectURL(imgFile) : novoProd.linkImagem} 
@@ -538,8 +534,8 @@ export default function App() {
                     />
                   ) : null}
                   <div className="z-10 flex flex-col items-center">
-                    <Camera className="w-8 h-8 md:w-10 md:h-10 text-pink-300 mb-1 md:mb-2" />
-                    <span className="text-[10px] md:text-sm text-pink-400 font-black uppercase tracking-widest text-center">Enviar Foto</span>
+                    <Camera className="w-8 h-8 md:w-10 md:h-10 text-[#808000] mb-1 md:mb-2" />
+                    <span className="text-[10px] md:text-sm text-[#556b2f] font-black uppercase tracking-widest text-center">Enviar Foto</span>
                   </div>
                   <input type="file" className="hidden" accept="image/*" onChange={e => setImgFile(e.target.files[0])} />
                 </label>
@@ -549,7 +545,7 @@ export default function App() {
                   placeholder="Nome do Produto" 
                   value={novoProd.nome} 
                   onChange={e => setNovoProd({...novoProd, nome: e.target.value})} 
-                  className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all text-sm md:text-base" 
+                  className="w-full p-3 md:p-4 bg-white border border-[#E2E2C5] text-[#556b2f] placeholder-[#8B9A63] rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-[#808000]/20 transition-all text-sm md:text-base" 
                 />
                 <div className="flex gap-3 md:gap-4">
                   <input 
@@ -557,20 +553,20 @@ export default function App() {
                     placeholder="Valor R$" 
                     value={novoProd.valor} 
                     onChange={e => setNovoProd({...novoProd, valor: e.target.value})} 
-                    className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all text-sm md:text-base" 
+                    className="w-full p-3 md:p-4 bg-white border border-[#E2E2C5] text-[#556b2f] placeholder-[#8B9A63] rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-[#808000]/20 transition-all text-sm md:text-base" 
                   />
                   <input 
                     placeholder="Link da Loja" 
                     value={novoProd.linkCompra} 
                     onChange={e => setNovoProd({...novoProd, linkCompra: e.target.value})} 
-                    className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 transition-all text-sm md:text-base" 
+                    className="w-full p-3 md:p-4 bg-white border border-[#E2E2C5] text-[#556b2f] placeholder-[#8B9A63] rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-[#808000]/20 transition-all text-sm md:text-base" 
                   />
                 </div>
               </div>
               <button 
                 disabled={loading} 
                 onClick={salvarProduto} 
-                className="w-full bg-pink-600 text-white font-bold py-4 md:py-5 rounded-xl md:rounded-[1.5rem] shadow-xl hover:bg-pink-700 transition-all flex items-center justify-center gap-2 md:gap-3 active:scale-95 disabled:opacity-50 text-sm md:text-base"
+                className="w-full bg-[#808000] text-[#FFFFF0] font-bold py-4 md:py-5 rounded-xl md:rounded-[1.5rem] shadow-xl hover:bg-[#666600] transition-all flex items-center justify-center gap-2 md:gap-3 active:scale-95 disabled:opacity-50 text-sm md:text-base cursor-pointer"
               >
                 {loading ? <Loader2 className="w-5 h-5 md:w-6 h-6 animate-spin" /> : <><Save className="w-4 h-4 md:w-5 h-5" /> Salvar na Lista</>}
               </button>
@@ -581,24 +577,24 @@ export default function App() {
 
       {/* MODAL GESTÃO USUÁRIOS */}
       {showUserAdmin && (
-        <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in zoom-in duration-300">
-          <div className="bg-white rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 w-full max-w-md shadow-2xl">
+        <div className="fixed inset-0 bg-[#2C3818]/40 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in zoom-in duration-300">
+          <div className="bg-[#FFFFF0] border border-[#E2E2C5] rounded-[2rem] md:rounded-[3rem] p-6 md:p-10 w-full max-w-md shadow-2xl">
             <div className="flex justify-between items-center mb-6 md:mb-8">
-              <h2 className="text-xl md:text-2xl font-bold text-slate-800">Administradores</h2>
+              <h2 className="text-xl md:text-2xl font-bold text-[#556b2f]">Administradores</h2>
               <button 
                 onClick={criarUsuarioAction} 
-                className="bg-pink-100 text-pink-600 px-4 md:px-6 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-pink-200 transition-colors"
+                className="bg-[#808000] text-[#FFFFF0] px-4 md:px-6 py-1.5 md:py-2 rounded-full text-[10px] md:text-xs font-black uppercase tracking-widest hover:bg-[#666600] transition-colors cursor-pointer"
               >
                 + Novo
               </button>
             </div>
             <div className="space-y-2 md:space-y-3 max-h-60 md:max-h-72 overflow-y-auto pr-2 mb-6 md:mb-8 custom-scrollbar">
               {usuarios.map(u => (
-                <div key={u.id} className="flex justify-between items-center p-4 md:p-5 bg-slate-50 rounded-xl md:rounded-[1.5rem] border border-slate-100 group">
-                  <span className="text-xs md:text-sm font-bold text-slate-600 truncate mr-2">{u.email}</span>
+                <div key={u.id} className="flex justify-between items-center p-4 md:p-5 bg-white rounded-xl md:rounded-[1.5rem] border border-[#E2E2C5] group">
+                  <span className="text-xs md:text-sm font-bold text-[#556b2f] truncate mr-2">{u.email}</span>
                   <button 
                     onClick={() => { if(confirm("Remover acesso?")) deleteDoc(doc(db, "usuarios", u.id)) }} 
-                    className="text-red-300 hover:text-red-500 p-1.5 md:p-2 hover:bg-red-50 rounded-full transition-all flex-shrink-0"
+                    className="text-red-400 hover:text-red-600 p-1.5 md:p-2 hover:bg-red-50 rounded-full transition-all flex-shrink-0 cursor-pointer"
                   >
                     <Trash2 className="w-3.5 h-3.5 md:w-4 h-4" />
                   </button>
@@ -607,7 +603,7 @@ export default function App() {
             </div>
             <button 
               onClick={() => setShowUserAdmin(false)} 
-              className="w-full py-2 text-slate-400 font-bold hover:text-slate-600 transition-colors text-xs md:text-sm"
+              className="w-full py-2 text-[#708248] font-bold hover:text-[#556b2f] transition-colors text-xs md:text-sm cursor-pointer"
             >
               Fechar Configurações
             </button>
@@ -617,41 +613,41 @@ export default function App() {
 
       {/* MODAL RESERVA */}
       {selecionado && !qr && (
-        <div className="fixed inset-0 bg-pink-900/40 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in zoom-in duration-300">
-          <div className="bg-white rounded-[2rem] md:rounded-[3rem] shadow-2xl w-full max-w-md overflow-hidden p-6 md:p-10 text-center animate-in slide-in-from-bottom duration-500 relative">
+        <div className="fixed inset-0 bg-[#2C3818]/40 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in zoom-in duration-300">
+          <div className="bg-[#FFFFF0] border border-[#E2E2C5] rounded-[2rem] md:rounded-[3rem] shadow-2xl w-full max-w-md overflow-hidden p-6 md:p-10 text-center animate-in slide-in-from-bottom duration-500 relative">
             <button 
               onClick={() => setSelecionado(null)}
-              className="absolute top-4 right-4 p-2 hover:bg-pink-50 rounded-full transition-colors cursor-pointer text-pink-300 hover:text-pink-600"
+              className="absolute top-4 right-4 p-2 hover:bg-[#EFEFD8] rounded-full transition-colors cursor-pointer text-[#708248] hover:text-[#556b2f]"
             >
               <X className="w-5 h-5" />
             </button>
-            <div className="bg-pink-50 w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
-              <Gift className="w-8 h-8 md:w-10 md:h-10 text-pink-500" />
+            <div className="bg-[#EFEFD8] w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+              <Gift className="w-8 h-8 md:w-10 md:h-10 text-[#808000]" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-pink-800 mb-1 md:mb-2">Quase lá!</h2>
-            <p className="text-sm md:text-base text-pink-400 mb-6 md:mb-8 italic">Você escolheu presentear com: <br/><span className="font-bold text-pink-600">"{selecionado.nome}"</span></p>
+            <h2 className="text-2xl md:text-3xl font-bold text-[#556b2f] mb-1 md:mb-2">Quase lá!</h2>
+            <p className="text-sm md:text-base text-[#708248] mb-6 md:mb-8 italic">Você escolheu presentear com: <br/><span className="font-bold text-[#556b2f]">"{selecionado.nome}"</span></p>
             
             <div className="space-y-3 md:space-y-4">
               <input 
                 placeholder="Seu nome completo" 
-                className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 text-center text-sm md:text-base" 
+                className="w-full p-3 md:p-4 bg-white border border-[#E2E2C5] text-[#556b2f] placeholder-[#8B9A63] rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-[#808000]/20 text-center text-sm md:text-base" 
                 value={nome} 
                 onChange={e => setNome(e.target.value)} 
               />
               <input 
                 placeholder="Seu WhatsApp (81 9 0000-0000)" 
-                className="w-full p-3 md:p-4 bg-slate-50 border border-slate-100 rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-pink-100 text-center text-sm md:text-base" 
+                className="w-full p-3 md:p-4 bg-white border border-[#E2E2C5] text-[#556b2f] placeholder-[#8B9A63] rounded-xl md:rounded-2xl outline-none focus:ring-4 focus:ring-[#808000]/20 text-center text-sm md:text-base" 
                 value={telefone} 
                 onChange={e => setTelefone(formatarTelefone(e.target.value))} 
               />
               <button 
                 disabled={loading} 
-                className="w-full bg-pink-600 text-white font-bold py-4 md:py-5 rounded-xl md:rounded-2xl shadow-xl hover:bg-pink-700 transition-all active:scale-95 disabled:opacity-50 text-sm md:text-base cursor-pointer" 
+                className="w-full bg-[#808000] text-[#FFFFF0] font-bold py-4 md:py-5 rounded-xl md:rounded-2xl shadow-xl hover:bg-[#666600] transition-all active:scale-95 disabled:opacity-50 text-sm md:text-base cursor-pointer" 
                 onClick={reservar}
               >
                 {loading ? <Loader2 className="w-5 h-5 md:w-6 h-6 animate-spin mx-auto" /> : "Confirmar Presente"}
               </button>
-              <button onClick={() => setSelecionado(null)} className="w-full py-1 text-slate-300 font-bold text-xs md:text-sm cursor-pointer">Cancelar</button>
+              <button onClick={() => setSelecionado(null)} className="w-full py-1 text-[#8B9A63] hover:text-[#556b2f] font-bold text-xs md:text-sm cursor-pointer">Cancelar</button>
             </div>
           </div>
         </div>
@@ -659,37 +655,37 @@ export default function App() {
 
       {/* MODAL SUCESSO / PIX */}
       {qr && (
-        <div className="fixed inset-0 bg-pink-900/60 backdrop-blur-xl flex items-center justify-center z-50 p-4 animate-in fade-in duration-500">
-          <div className="bg-white rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl w-full max-w-sm overflow-hidden text-center animate-in slide-in-from-bottom duration-500 relative">
+        <div className="fixed inset-0 bg-[#2C3818]/60 backdrop-blur-xl flex items-center justify-center z-50 p-4 animate-in fade-in duration-500">
+          <div className="bg-[#FFFFF0] border border-[#E2E2C5] rounded-[2.5rem] md:rounded-[3.5rem] shadow-2xl w-full max-w-sm overflow-hidden text-center animate-in slide-in-from-bottom duration-500 relative">
             <button 
               onClick={() => { setQr(""); setSelecionado(null); setNome(""); setTelefone(""); setWhatsappMsg(""); }}
-              className="absolute top-4 right-4 p-2 hover:bg-pink-50 rounded-full transition-colors cursor-pointer text-pink-300 hover:text-pink-600"
+              className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition-colors cursor-pointer text-[#FFFFF0]/80 hover:text-[#FFFFF0]"
             >
               <X className="w-5 h-5" />
             </button>
-            <div className="bg-pink-600 p-6 md:p-10 text-white text-center">
-              <div className="bg-white/20 w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
-                <CheckCircle className="w-10 h-10 md:w-12 h-12 text-white" />
+            <div className="bg-[#556b2f] p-6 md:p-10 text-[#FFFFF0] text-center">
+              <div className="bg-[#FFFFF0]/20 w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+                <CheckCircle className="w-10 h-10 md:w-12 h-12 text-[#FFFFF0]" />
               </div>
               <h2 className="text-xl md:text-2xl font-bold mb-1 md:mb-2">Muito Obrigado!</h2>
               <p className="text-sm md:text-base opacity-90 italic">Sua escolha nos deixou muito felizes.</p>
             </div>
             <div className="p-6 md:p-10">
-              <div className="bg-pink-50 p-4 md:p-6 rounded-[2rem] md:rounded-[2.5rem] border-2 border-dashed border-pink-100 mb-6 md:mb-8 inline-block shadow-inner">
+              <div className="bg-white p-4 md:p-6 rounded-[2rem] md:rounded-[2.5rem] border-2 border-dashed border-[#D4D4A8] mb-6 md:mb-8 inline-block shadow-inner">
                 <img src={qr} className="w-36 h-36 md:w-48 h-48 mx-auto rounded-xl" />
               </div>
               <div className="space-y-3 md:space-y-4">
                 <button 
                   onClick={() => { navigator.clipboard.writeText(pixCopiaECola); alert("Copiado!"); }} 
-                  className="w-full border-2 border-pink-100 text-pink-600 font-bold py-3 md:py-4 rounded-xl md:rounded-2xl flex items-center justify-center gap-2 hover:bg-pink-50 transition-all active:scale-95 text-sm md:text-base cursor-pointer"
+                  className="w-full border-2 border-[#808000] text-[#556b2f] font-bold py-3 md:py-4 rounded-xl md:rounded-2xl flex items-center justify-center gap-2 hover:bg-[#EFEFD8] transition-all active:scale-95 text-sm md:text-base cursor-pointer"
                 >
-                  <Copy className="w-4 h-4"/> Copiar Pix
+                  <Copy className="w-4 h-4 text-[#808000]"/> Copiar Pix
                 </button>
                 {selecionado.linkCompra && (
                   <a 
                     href={selecionado.linkCompra} 
                     target="_blank" 
-                    className="w-full bg-slate-800 text-white font-bold py-3 md:py-4 rounded-xl md:rounded-2xl flex items-center justify-center gap-2 shadow-lg hover:bg-slate-900 transition-all text-sm md:text-base cursor-pointer"
+                    className="w-full bg-[#808000] text-[#FFFFF0] font-bold py-3 md:py-4 rounded-xl md:rounded-2xl flex items-center justify-center gap-2 shadow-lg hover:bg-[#666600] transition-all text-sm md:text-base cursor-pointer"
                   >
                     <ShoppingBag className="w-4 h-4"/> Comprar Online
                   </a>
@@ -703,7 +699,7 @@ export default function App() {
                     setTelefone(""); 
                     setWhatsappMsg("");
                   }} 
-                  className="w-full text-slate-400 font-black uppercase tracking-widest text-[10px] md:text-xs py-3 md:py-4 hover:text-slate-600 transition-colors cursor-pointer"
+                  className="w-full text-[#708248] font-black uppercase tracking-widest text-[10px] md:text-xs py-3 md:py-4 hover:text-[#556b2f] transition-colors cursor-pointer"
                 >
                   Concluído
                 </button>
