@@ -457,9 +457,7 @@ export default function App() {
                     <p className="text-[#808000] font-black text-base md:text-2xl mb-3 md:mb-6 tracking-tight">R$ {p.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                     <div className="mt-auto">
                       {p.reservado ? (
-                        <div className="bg-[#F7F7E6] p-2 md:p-4 rounded-xl md:rounded-2xl border border-[#E2E2C5] text-[10px] md:text-sm">
-                          <p className="text-[#8B9A63] uppercase font-bold text-[8px] md:text-[10px] mb-0.5 md:mb-1 tracking-widest">Escolhido por</p>
-                          <p className="text-[#556b2f] font-bold truncate">{p.reservadoPor}</p>
+                        <div>
                         </div>
                       ) : (
                         <button 
