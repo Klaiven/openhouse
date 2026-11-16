@@ -456,17 +456,29 @@ export default function App() {
                     <h2 className="text-sm md:text-xl font-bold text-[#556b2f] mb-1 md:mb-2 leading-tight line-clamp-2">{p.nome}</h2>
                     <p className="text-[#808000] font-black text-base md:text-2xl mb-3 md:mb-6 tracking-tight">R$ {p.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                     <div className="mt-auto">
-                      {p.reservado ? (
-                        <div>
-                        </div>
-                      ) : (
-                        <button 
-                          onClick={() => setSelecionado(p)} 
+                    {p.reservado ? (
+                      p.linkCompra ? (
+                        <a 
+                          href={p.linkCompra} 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
                           className="w-full bg-[#808000] hover:bg-[#666600] text-[#FFFFF0] font-bold py-2.5 md:py-4 rounded-xl md:rounded-2xl shadow-md hover:shadow-[#808000]/30 transition-all flex items-center justify-center gap-1.5 md:gap-2 active:scale-95 text-xs md:text-base cursor-pointer"
                         >
-                          <Gift className="w-4 h-4 md:w-5 h-5" /> Presentear
-                        </button>
-                      )}
+                          <ExternalLink className="w-4 h-4 md:w-5 h-5" /> VER NA LOJA
+                        </a>
+                      ) : (
+                        <div className="w-full bg-[#E2E2C5] text-[#556b2f] font-bold py-2.5 md:py-4 rounded-xl md:rounded-2xl flex items-center justify-center text-xs md:text-base cursor-default">
+                          JÁ RESERVADO
+                        </div>
+                      )
+                    ) : (
+                      <button 
+                        onClick={() => setSelecionado(p)} 
+                        className="w-full bg-[#808000] hover:bg-[#666600] text-[#FFFFF0] font-bold py-2.5 md:py-4 rounded-xl md:rounded-2xl shadow-md hover:shadow-[#808000]/30 transition-all flex items-center justify-center gap-1.5 md:gap-2 active:scale-95 text-xs md:text-base cursor-pointer"
+                      >
+                        <Gift className="w-4 h-4 md:w-5 h-5" /> Presentear
+                      </button>
+                    )}
                     </div>
                   </div>
                 </div>
