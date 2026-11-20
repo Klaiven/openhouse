@@ -476,7 +476,7 @@ export default function App() {
                         onClick={() => setSelecionado(p)} 
                         className="w-full bg-[#808000] hover:bg-[#666600] text-[#FFFFF0] font-bold py-2.5 md:py-4 rounded-xl md:rounded-2xl shadow-md hover:shadow-[#808000]/30 transition-all flex items-center justify-center gap-1.5 md:gap-2 active:scale-95 text-xs md:text-base cursor-pointer"
                       >
-                        <Gift className="w-4 h-4 md:w-5 h-5" /> Presentear
+                        <Gift className="w-4 h-4 md:w-5 h-5" /> Reservar
                       </button>
                     )}
                     </div>
@@ -679,6 +679,7 @@ export default function App() {
               </div>
               <h2 className="text-xl md:text-2xl font-bold mb-1 md:mb-2">Muito Obrigado!</h2>
               <p className="text-sm md:text-base opacity-90 italic">Sua escolha nos deixou muito felizes.</p>
+              <p className="text-sm md:text-base opacity-90 italic">Agora você pode comprar online, mandar o PIX, ou comprar na sua loja de preferência, seu presente está reservado ❤.</p>
             </div>
             <div className="p-6 md:p-10">
               <div className="bg-white p-4 md:p-6 rounded-[2rem] md:rounded-[2.5rem] border-2 border-dashed border-[#D4D4A8] mb-6 md:mb-8 inline-block shadow-inner">
